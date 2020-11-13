@@ -1,0 +1,61 @@
+---
+title: "Milestone_5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readr)
+library(dplyr)
+```
+
+
+```{r}
+Kt <- read_csv("Klay Thompson Stats copy.csv", 
+    col_types = cols(G = col_skip(), Age = col_skip(), 
+        Tm = col_skip(), X6 = col_skip(), 
+        GS = col_skip(), 
+        ORB = col_double(), 
+        PF = col_skip(), GmSc = col_skip(), 
+        `+/-` = col_skip())) %>%
+  rename(W_L = "X8") %>%
+  rename(OPP = "Opp") %>%
+  rename(FGP = "FG%") %>%
+  rename(FTP = "FT%") %>%
+  rename(TPP = "3P%") %>%
+  rename(TP = "3P") %>%
+  rename(Game = "Rk") %>%
+  rename(TPA = "3PA") %>%
+  mutate(FTP = FTP * 100) %>%
+  mutate(TPP = TPP * 100) %>%
+  mutate(FGP = FGP * 100) %>%
+  mutate(RSLT = c(rep("W", 24), "L", rep("W", 5), "L", rep("W", 7), "L", "W", "L", rep("W", 11), "L", rep("W", 7), "L", rep("W", 7), "L", rep("W", 6), "L", "W", "L", rep("W", 4))) 
+
+  
+Kt <- as.data.frame(Kt)
+
+write_rds(Kt, "~/Downloads/Kt.rds") 
+        
+```
+
+
+
+```{r}
+Kt %>%
+  select(MP, Game) %>%
+  mutate_if(is.numeric, funs(replace_na(., 0))) %>%
+  ggplot(data = Kt, mapping = aes(x = Game, y = MP)) +
+  geom_line(color = "blue") +
+  geom_vline(lty = "dashed", color = "red", xintercept = 58) +
+  theme_bw() +
+  labs(x = "Game Number", y = "Minutes Played (min:sec)", title = "Klay Thompson's Minutes", subtitle = "Did Klay Thompson Play Too Many Minutes During the Regular Season?", caption = "Klay Thompson was inactive for Game 11 (BRK) and Game 24 (BOS)\n The red line indicates when the Warriors clinched a playoff berth")  
+  
+  
+  
+  
+
+```
+
+`
+
